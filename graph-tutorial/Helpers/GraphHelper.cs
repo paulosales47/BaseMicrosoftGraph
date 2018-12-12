@@ -50,7 +50,7 @@ namespace graph_tutorial.Helpers
             var graphClient = GetAuthenticatedClient();
 
             var notebooks = await graphClient.Me.Onenote.Notebooks.Request()
-                .Select("displayName")
+                //.Select("displayName, createdBy, lastModifiedBy, id")
                 .GetAsync();
 
             return notebooks.AsEnumerable();
@@ -64,7 +64,50 @@ namespace graph_tutorial.Helpers
             {
                 DisplayName = nomeNotebook
             });
+        }
 
+        public static async Task<IEnumerable<OnenoteSection>> GetSectionAsync()
+        {
+            var graphClient = GetAuthenticatedClient();
+
+            var sections = await graphClient.Me.Onenote.Sections.Request().GetAsync();
+
+            return sections.AsEnumerable();
+        }
+        
+        public static async Task CreateSectionAsync(OnenoteSection section)
+        {
+            var graphClient = GetAuthenticatedClient();
+            
+            await graphClient.Me.Onenote.Sections.Request().AddAsync(new OnenoteSection
+            {
+                DisplayName = section.DisplayName
+                ,
+                ParentNotebook = section.ParentNotebook
+            });
+        }
+
+        public static async Task<IEnumerable<OnenotePage>> GetPagesAsync()
+        {
+            var graphClient = GetAuthenticatedClient();
+
+            var pages = await graphClient.Me.Onenote.Pages.Request().GetAsync();
+
+            return pages.AsEnumerable();
+        }
+
+        public static async Task CreatePageAsync(OnenotePage page)
+        {
+            var graphClient = GetAuthenticatedClient();
+
+            await graphClient.Me.Onenote.Pages.Request()
+            .Headers.
+            .AddAsync(new OnenotePage
+            {
+                Title = page.Title
+                ,
+                ParentSection = page.ParentSection
+            });
         }
 
         private static GraphServiceClient GetAuthenticatedClient()

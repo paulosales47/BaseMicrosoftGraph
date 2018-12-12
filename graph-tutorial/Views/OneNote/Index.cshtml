@@ -5,38 +5,110 @@
     ViewBag.Current = "OneNote";
 }
 
-<h1>Calendar</h1>
+<h1>OneNote</h1>
 <table class="table">
     <thead>
-        <tr>
-            <th scope="col">Nome</th>
-        </tr>
+		<tr>
+			<th scope="col">Nome</th>
+			@*<th scope="col">Criado por</th>
+		<th scope="col">Ultima modificação por</th>*@
+			<th scope="col">Seções</th>
+			<th scope="col">Páginas</th>
+		</tr>
     </thead>
     <tbody>
         @if (Model != null)
         {
             foreach (var item in Model)
             {
-                <tr>
-                    <td>@item.DisplayName</td>
-                </tr>
+		<tr>
+			<td>@item.DisplayName</td>
+			@*<td>@item.CreatedBy.User.DisplayName </td>
+		<td>@item.LastModifiedBy.User.DisplayName</td>*@
+			<td>
+				@foreach (var secao in ViewBag.Sections)
+				{
+					if (secao.ParentNotebook.DisplayName.Equals(item.DisplayName))
+					{
+						<span class="badge badge-primary">@secao.DisplayName</span>
+					}
+
+				}
+			</td>
+			<td>
+				@foreach (var secao in ViewBag.Sections)
+				{
+					if (secao.ParentNotebook.DisplayName.Equals(item.DisplayName))
+					{
+						foreach (var pagina in ViewBag.Pages)
+						{
+							if (pagina.ParentSection.DisplayName.Equals(secao.DisplayName))
+							{
+								<span class="badge badge-warning">@pagina.Title</span>
+							}
+
+						}
+					}
+				}
+			</td>
+
+		</tr>
             }
         }
     </tbody>
 </table>
  
 <div class="jumbotron p-4">
-    @using (Html.BeginForm("CadastrarNovoNotebookAsync", "OneNote", FormMethod.Post, new { enctype = "multipart/form-data" }))
+    @using (Html.BeginForm("CadastrarNotebookAsync", "OneNote", FormMethod.Post, new { enctype = "multipart/form-data" }))
     {
         <h4>Criar novo notebook</h4>
         <hr />
         <div class="form-group">
             <label for="nomeNotebook">Nome do notebook</label>
-            <input type="text" class="form-control" id="nomeNotebook" name="nomeNotebook" aria-describedby="nomeHelp" placeholder="Informe o nome do notebook">
-            <small id="nomeHelp" class="form-text text-muted">Informe o nome de exibição do notebook</small>
+            <input type="text" class="form-control" id="nomeNotebook" name="nomeNotebook" placeholder="Informe o nome do notebook">
         </div>
-        <button type="submit" class="btn btn-primary">Submit</button>
+        <button type="submit" class="btn btn-primary">Criar</button>
     }
+</div>
+
+<div class="jumbotron p-4">
+	@using (Html.BeginForm("CadastrarSecaoAsync", "OneNote", FormMethod.Post, new { enctype = "multipart/form-data" }))
+	{
+		<h4>Criar nova seção</h4>
+		<hr />
+
+		<div class="form-group">
+			<label for="selectNotebook">Selecione o notebook onde a seção será criada</label>
+			@Html.DropDownList("selectNotebook", ViewBag.NotebooksListaSuspensa as IEnumerable<SelectListItem>, new { @class = "form-control", @style = "", @onclick = "" })
+		</div>
+
+		<div class="form-group">
+			<label for="nomeNotebook">Nome da seção</label>
+			<input type="text" class="form-control" id="nomeSecao" name="nomeSecao" placeholder="Informe o nome da seção">
+		</div>
+
+		<button type="submit" class="btn btn-primary">Criar</button>
+	}
+</div>
+
+<div class="jumbotron p-4">
+	@using (Html.BeginForm("CadastrarPaginaAsync", "OneNote", FormMethod.Post, new { enctype = "multipart/form-data" }))
+	{
+		<h4>Criar nova página</h4>
+		<hr />
+
+		<div class="form-group">
+			<label for="selectSection">Selecione a seção onde a página será criada</label>
+			@Html.DropDownList("selectSection", ViewBag.SectionsListaSuspensa as IEnumerable<SelectListItem>, new { @class = "form-control", @style = "", @onclick = "" })
+		</div>
+
+		<div class="form-group">
+			<label for="tituloPagina">Titulo da página</label>
+			<input type="text" class="form-control" id="tituloPagina" name="tituloPagina" placeholder="Informe o nome da seção">
+		</div>
+
+		<button type="submit" class="btn btn-primary">Criar</button>
+	}
 </div>
 
 
