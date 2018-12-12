@@ -1,0 +1,42 @@
+﻿@* Copyright (c) Microsoft. All rights reserved. Licensed under the MIT license. See LICENSE in the project root for license information. *@
+@model IEnumerable<Microsoft.Graph.Notebook>
+
+@{
+    ViewBag.Current = "OneNote";
+}
+
+<h1>Calendar</h1>
+<table class="table">
+    <thead>
+        <tr>
+            <th scope="col">Nome</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model != null)
+        {
+            foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.DisplayName</td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
+ 
+<div class="jumbotron p-4">
+    @using (Html.BeginForm("CadastrarNovoNotebookAsync", "OneNote", FormMethod.Post, new { enctype = "multipart/form-data" }))
+    {
+        <h4>Criar novo notebook</h4>
+        <hr />
+        <div class="form-group">
+            <label for="nomeNotebook">Nome do notebook</label>
+            <input type="text" class="form-control" id="nomeNotebook" name="nomeNotebook" aria-describedby="nomeHelp" placeholder="Informe o nome do notebook">
+            <small id="nomeHelp" class="form-text text-muted">Informe o nome de exibição do notebook</small>
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    }
+</div>
+
+
