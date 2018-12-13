@@ -22,7 +22,8 @@
             foreach (var item in Model)
             {
 		<tr>
-			<td>@item.DisplayName</td>
+			<td><span class="badge badge-dark">@item.DisplayName</span></td>
+			
 			@*<td>@item.CreatedBy.User.DisplayName </td>
 		<td>@item.LastModifiedBy.User.DisplayName</td>*@
 			<td>
@@ -67,7 +68,7 @@
             <label for="nomeNotebook">Nome do notebook</label>
             <input type="text" class="form-control" id="nomeNotebook" name="nomeNotebook" placeholder="Informe o nome do notebook">
         </div>
-        <button type="submit" class="btn btn-primary">Criar</button>
+        <button type="submit" class="btn btn-dark">Criar</button>
     }
 </div>
 
@@ -107,7 +108,7 @@
 			<input type="text" class="form-control" id="tituloPagina" name="tituloPagina" placeholder="Informe o nome da seção">
 		</div>
 
-		<button type="submit" class="btn btn-primary">Criar</button>
+		<button type="submit" class="btn btn-warning">Criar</button>
 	}
 </div>
 

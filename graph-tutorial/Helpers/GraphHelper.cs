@@ -4,9 +4,12 @@ using Microsoft.Graph;
 using Microsoft.Identity.Client;
 using System.Collections.Generic;
 using System.Configuration;
+using System.IO;
 using System.Linq;
+using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Security.Claims;
+using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 
@@ -79,11 +82,9 @@ namespace graph_tutorial.Helpers
         {
             var graphClient = GetAuthenticatedClient();
             
-            await graphClient.Me.Onenote.Sections.Request().AddAsync(new OnenoteSection
-            {
+            await graphClient.Me.Onenote.Notebooks[section.ParentNotebook.Id].Sections.Request()
+            .AddAsync(new OnenoteSection {
                 DisplayName = section.DisplayName
-                ,
-                ParentNotebook = section.ParentNotebook
             });
         }
 
@@ -100,14 +101,14 @@ namespace graph_tutorial.Helpers
         {
             var graphClient = GetAuthenticatedClient();
 
-            await graphClient.Me.Onenote.Pages.Request()
-            .Headers.
-            .AddAsync(new OnenotePage
+            string htmlBody = $"<!DOCTYPE html><html><head><title>{page.Title}</title></head>";
+            byte[] byteArray = Encoding.ASCII.GetBytes(htmlBody);
+
+            using (MemoryStream stream = new MemoryStream(byteArray))
             {
-                Title = page.Title
-                ,
-                ParentSection = page.ParentSection
-            });
+                await graphClient.Me.Onenote.Sections[page.ParentSection.Id].Pages.Request()
+                .AddAsync(stream, "text/html");
+            }
         }
 
         private static GraphServiceClient GetAuthenticatedClient()

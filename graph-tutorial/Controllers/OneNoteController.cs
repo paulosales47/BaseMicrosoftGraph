@@ -65,7 +65,18 @@ namespace graph_tutorial.Controllers
         public async Task<ActionResult> CadastrarNotebookAsync(string nomeNotebook)
         {
             await GraphHelper.CreateNotebookAsync(nomeNotebook);
-            return View("Index");
+
+            var notebooks = await GraphHelper.GetNotebookAsync();
+            var sections = await GraphHelper.GetSectionAsync();
+            var pages = await GraphHelper.GetPagesAsync();
+
+            ViewBag.Sections = sections;
+            ViewBag.Pages = pages;
+
+            GerarListaSuspensaNotebook(notebooks);
+            GerarListaSuspensaSection(sections);
+
+            return View("Index", notebooks);
         }
 
         public async Task<ActionResult> CadastrarSecaoAsync(string nomeSecao, string selectNotebook)
@@ -79,7 +90,16 @@ namespace graph_tutorial.Controllers
                 ,
                 ParentNotebook = notebook
             });
-            return View("Index");
+
+            var sections = await GraphHelper.GetSectionAsync();
+            var pages = await GraphHelper.GetPagesAsync();
+
+            ViewBag.Sections = sections;
+            ViewBag.Pages = pages;
+            GerarListaSuspensaNotebook(notebooks);
+            GerarListaSuspensaSection(sections);
+
+            return View("Index", notebooks);
         }
 
         public async Task<ActionResult> CadastrarPaginaAsync(string tituloPagina, string selectSection)
@@ -93,7 +113,16 @@ namespace graph_tutorial.Controllers
                 ,
                 ParentSection = section
             });
-            return View("Index");
+
+            var notebooks = await GraphHelper.GetNotebookAsync();
+            var pages = await GraphHelper.GetPagesAsync();
+
+            ViewBag.Sections = sections;
+            ViewBag.Pages = pages;
+            GerarListaSuspensaNotebook(notebooks);
+            GerarListaSuspensaSection(sections);
+
+            return View("Index", notebooks);
         }
     }
 }
